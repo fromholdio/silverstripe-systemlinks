@@ -12,7 +12,7 @@ SilverStripe 4
 
 `composer require fromholdio/silverstripe-systemlinks`
 
-Setup your config file
+No links are setup by default - to complete the install, you need to setup your links config:
 
 ```yml
 Fromholdio\SystemLinks\SystemLinks:

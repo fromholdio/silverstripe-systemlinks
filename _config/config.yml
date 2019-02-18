@@ -1,17 +1,3 @@
 ---
 Name: fromholdio-systemlinks
 ---
-Fromholdio\SystemLinks\SystemLinks:
-  links:
-    login:
-      url: /Security/login
-      title: Login
-    logout:
-      url: /Security/logout
-      title: Logout
-    lostpassword:
-      url: /Security/lostpassword
-      title: Lost Password
-    cmsadmin:
-      url: /admin
-      title: 'CMS Admin'
