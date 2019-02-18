@@ -1,0 +1,27 @@
+{
+	"name": "fromholdio/silverstripe-systemlinks",
+	"type": "silverstripe-vendormodule",
+	"description": "A SilverStripe module that allows developers to define a static list of \"system links\" - login, logout, lostpassword, etc - and expose these for use in both back-end and templates.",
+	"license": "BSD-3-Clause",
+	"keywords": ["silverstripe", "cms", "login", "logout", "links"],
+	"homepage": "https://github.com/fromholdio/silverstripe-systemlinks",
+	"support": {
+		"issues": "https://github.com/fromholdio/silverstripe-systemlinks/issues"
+	},
+	"authors": [{
+		"name": "Luke Fromhold",
+		"homepage": "https://fromhold.io"
+	}],
+	"require": {
+		"php": ">=5.6",
+		"silverstripe/vendor-plugin": "^1.0",
+		"silverstripe/framework": "^4.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Fromholdio\\SystemLinks\\": "src/"
+		}
+	},
+	"prefer-stable": true,
+	"minimum-stability": "dev"
+}
