@@ -133,6 +133,15 @@ class SystemLinks implements TemplateGlobalProvider
     private static function logout_url()
     {
         $url = Security::logout_url();
-        return SecurityToken::inst()->addToUrl($url);
+        $url = SecurityToken::inst()->addToUrl($url);
+
+        $siteConfig = SiteConfig::current_site_config();
+        if ($siteConfig && $siteConfig->hasMethod('getSystemLinksLogoutRedirectURL')) {
+            $redirectURL = $siteConfig->getSystemLinksLogoutRedirectURL();
+            if (is_string($url) && !empty($url)) {
+                $url = Controller::join_links($url, '?BackURL=' . urlencode($redirectURL));
+            }
+        }
+        return $url;
     }
 }
