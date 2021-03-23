@@ -2,10 +2,15 @@
 
 namespace Fromholdio\SystemLinks;
 
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\SecurityToken;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\TemplateGlobalProvider;
 
@@ -26,24 +31,24 @@ class SystemLinks implements TemplateGlobalProvider
 
     public static function get_links()
     {
-        $links = self::get_raw_links();
+        $links = static::get_raw_links();
         if (!$links) {
             return null;
         }
         $linksList = ArrayList::create();
         foreach ($links as $link) {
-            $linksList->push(self::convert_to_object($link));
+            $linksList->push(static::convert_to_object($link));
         }
         return $linksList;
     }
 
     public static function get_link($key)
     {
-        $link = self::get_raw_link($key);
+        $link = static::get_raw_link($key);
         if (!$link) {
             return null;
         }
-        return self::convert_to_object($link);
+        return static::convert_to_object($link);
     }
 
     public static function get_map($value = 'title')
@@ -54,7 +59,7 @@ class SystemLinks implements TemplateGlobalProvider
                 . 'received "' . $value . '".');
         }
 
-        $links = self::get_raw_links();
+        $links = static::get_raw_links();
         $map = [];
         foreach ($links as $key => $link) {
             $map[$key] = $link[$value];
@@ -64,20 +69,25 @@ class SystemLinks implements TemplateGlobalProvider
 
     public static function get_raw_links()
     {
-        $links = self::config()->get('links');
+        $links = static::config()->get('links');
         if (!$links || count($links) < 1) {
             return null;
+        }
+        foreach ($links as $key => $link) {
+            $links[$key]['url'] = self::process_url($link['url']);
         }
         return $links;
     }
 
     public static function get_raw_link($key)
     {
-        $links = self::get_raw_links();
+        $links = static::get_raw_links();
         if (!isset($links[$key])) {
             return null;
         }
-        return $links[$key];
+        $link = $links[$key];
+        $link['url'] = self::process_url($link['url']);
+        return $link;
     }
 
     private static function convert_to_object($link)
@@ -94,5 +104,35 @@ class SystemLinks implements TemplateGlobalProvider
             'URL' => $link['url'],
             'Title' => $link['title']
         ]);
+    }
+
+    private static function process_url($url)
+    {
+        if ($url === '$Login') {
+            $url = self::login_url();
+        }
+        else if ($url === '$Logout') {
+            $url = self::logout_url();
+        }
+        else if ($url === '$LostPassword') {
+            $url = self::lost_password_url();
+        }
+        return $url;
+    }
+
+    private static function login_url()
+    {
+        return Security::login_url();
+    }
+
+    private static function lost_password_url()
+    {
+        return Security::lost_password_url();
+    }
+
+    private static function logout_url()
+    {
+        $url = Security::logout_url();
+        return SecurityToken::inst()->addToUrl($url);
     }
 }
