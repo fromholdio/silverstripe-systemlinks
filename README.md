@@ -6,7 +6,7 @@ Integrate this with functionality that already allows users to build links, like
 
 ## Requirements
 
-SilverStripe 4
+SilverStripe 4 or 5
 
 ## Installation
 
