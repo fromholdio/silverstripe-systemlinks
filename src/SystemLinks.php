@@ -117,6 +117,10 @@ class SystemLinks implements TemplateGlobalProvider
         else if ($url === '$LostPassword') {
             $url = self::lost_password_url();
         }
+        $curr = Controller::curr();
+        if ($curr->hasMethod('doProcessSystemLinkURL')) {
+            $url = $curr->doProcessSystemLinkURL($url);
+        }
         return $url;
     }
 
