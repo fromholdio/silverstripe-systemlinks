@@ -3,8 +3,8 @@
 namespace Fromholdio\SystemLinks;
 
 use SilverStripe\Control\Controller;
-use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\ArrayList;
@@ -147,5 +147,28 @@ class SystemLinks implements TemplateGlobalProvider
             }
         }
         return $url;
+    }
+
+    public static function link_shortcode_handler($arguments, $content = null, $parser = null, $tagName = null): ?string
+    {
+        $key = $arguments['key'] ?? null;
+        if (empty($key)) {
+            return null;
+        }
+
+        $sysLink = SystemLinks::get_link($key);
+        $url = $sysLink?->getField('URL');
+
+        $link = empty($url) ? null : Convert::raw2att($url);
+
+        if (empty($link)) {
+            return null;
+        }
+
+        if ($content) {
+            return sprintf('<a href="%s">%s</a>', $link, $parser->parse($content));
+        } else {
+            return $link;
+        }
     }
 }

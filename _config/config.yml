@@ -1,3 +1,11 @@
 ---
 Name: fromholdio-systemlinks
 ---
+
+SilverStripe\Admin\ModalController:
+  extensions:
+    - Fromholdio\SystemLinks\Extensions\SystemLinkModalExtension
+
+SilverStripe\Admin\LeftAndMain:
+  extensions:
+    - Fromholdio\SystemLinks\Extensions\SystemLinksLeftAndMainExtension
