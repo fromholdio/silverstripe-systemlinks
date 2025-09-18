@@ -3,14 +3,16 @@
 use Fromholdio\SystemLinks\SystemLinks;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\Core\Manifest\ModuleLoader;
-use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
 
 call_user_func(function () {
     $module = ModuleLoader::inst()->getManifest()->getModule('fromholdio/silverstripe-systemlinks');
-    TinyMCEConfig::get('cms')
-        ->enablePlugins([
+    $editorConfig = HTMLEditorConfig::get('cms');
+    if ($editorConfig instanceof TinyMCEConfig) {
+        $editorConfig->enablePlugins([
             'sslinksystem' => $module->getResource('client/dist/js/TinyMCE_sslink-system.js'),
         ]);
+    }
 });
 
 
