@@ -7,8 +7,8 @@ use SilverStripe\Admin\Forms\LinkFormFactory;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 class EditorSystemLinkFormFactory extends LinkFormFactory
 {
@@ -42,7 +42,7 @@ class EditorSystemLinkFormFactory extends LinkFormFactory
     protected function getValidator($controller, $name, $context)
     {
         if ($context['RequireLinkText']) {
-            return RequiredFields::create('Text');
+            return RequiredFieldsValidator::create('Text');
         }
 
         return null;
