@@ -92,7 +92,7 @@ class SystemLinks implements TemplateGlobalProvider
 
     private static function convert_to_object($link)
     {
-        if (!isset($link['url'])) {
+        if (!array_key_exists('url', $link)) {
             throw new \UnexpectedValueException('SystemLinks::$links misconfiguration');
         }
 
