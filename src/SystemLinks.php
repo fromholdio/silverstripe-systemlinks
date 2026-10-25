@@ -92,7 +92,7 @@ class SystemLinks implements TemplateGlobalProvider
 
     private static function convert_to_object($link)
     {
-        if (!isset($link['url'])) {
+        if (!array_key_exists('url', $link)) {
             throw new \UnexpectedValueException('SystemLinks::$links misconfiguration');
         }
 
@@ -117,8 +117,11 @@ class SystemLinks implements TemplateGlobalProvider
         else if ($url === '$LostPassword') {
             $url = self::lost_password_url();
         }
-        $curr = Controller::curr();
-        if ($curr->hasMethod('doProcessSystemLinkURL')) {
+
+        if (Controller::has_curr()
+            && ($curr = Controller::curr())
+            && $curr->hasMethod('doProcessSystemLinkURL')
+        ) {
             $url = $curr->doProcessSystemLinkURL($url);
         }
         return $url;
@@ -136,17 +139,19 @@ class SystemLinks implements TemplateGlobalProvider
 
     private static function logout_url()
     {
-        $url = Security::logout_url();
-        $url = SecurityToken::inst()->addToUrl($url);
+        if (Controller::has_curr()) {
+            $url = Security::logout_url();
 
-        $siteConfig = SiteConfig::current_site_config();
-        if ($siteConfig && $siteConfig->hasMethod('getSystemLinksLogoutRedirectURL')) {
-            $redirectURL = $siteConfig->getSystemLinksLogoutRedirectURL();
-            if (is_string($url) && !empty($url)) {
-                $url = Controller::join_links($url, '?BackURL=' . urlencode($redirectURL));
+            $siteConfig = SiteConfig::current_site_config();
+            if ($siteConfig && $siteConfig->hasMethod('getSystemLinksLogoutRedirectURL')) {
+                $redirectURL = $siteConfig->getSystemLinksLogoutRedirectURL();
+                if (is_string($url) && !empty($url)) {
+                    $url = Controller::join_links($url, '?BackURL=' . urlencode($redirectURL));
+                }
             }
+            return $url;
         }
-        return $url;
+        return null;
     }
 
     public static function link_shortcode_handler($arguments, $content = null, $parser = null, $tagName = null): ?string
