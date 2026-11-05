@@ -92,7 +92,8 @@ class SystemLinks implements TemplateGlobalProvider
 
     private static function convert_to_object($link)
     {
-        if (!isset($link['url'])) {
+        // The URL may be configured but unavailable (null), e.g. $Logout outside a request.
+        if (!array_key_exists('url', $link)) {
             throw new \UnexpectedValueException('SystemLinks::$links misconfiguration');
         }
 
@@ -117,8 +118,9 @@ class SystemLinks implements TemplateGlobalProvider
         else if ($url === '$LostPassword') {
             $url = self::lost_password_url();
         }
+        // There is no current controller outside a request (CLI tasks, queued jobs).
         $curr = Controller::curr();
-        if ($curr->hasMethod('doProcessSystemLinkURL')) {
+        if ($curr?->hasMethod('doProcessSystemLinkURL')) {
             $url = $curr->doProcessSystemLinkURL($url);
         }
         return $url;
@@ -136,6 +138,12 @@ class SystemLinks implements TemplateGlobalProvider
 
     private static function logout_url()
     {
+        // The logout URL carries the current session's security token, so there is none
+        // without a request.
+        if (is_null(Controller::curr())) {
+            return null;
+        }
+
         $url = Security::logout_url();
         $url = SecurityToken::inst()->addToUrl($url);
 
