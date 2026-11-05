@@ -9,7 +9,6 @@ use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Security\Security;
-use SilverStripe\Security\SecurityToken;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Model\ArrayData;
 use SilverStripe\View\TemplateGlobalProvider;
@@ -144,8 +143,8 @@ class SystemLinks implements TemplateGlobalProvider
             return null;
         }
 
+        // Core adds the security token to the logout URL.
         $url = Security::logout_url();
-        $url = SecurityToken::inst()->addToUrl($url);
 
         $siteConfig = SiteConfig::current_site_config();
         if ($siteConfig && $siteConfig->hasMethod('getSystemLinksLogoutRedirectURL')) {
